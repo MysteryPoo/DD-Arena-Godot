@@ -1,0 +1,179 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scripts/login.gd" type="Script" id=1]
+[ext_resource path="res://images/background.png" type="Texture" id=2]
+
+[node name="form" type="CanvasLayer"]
+script = ExtResource( 1 )
+
+[node name="ui" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -512.0
+margin_top = -300.0
+margin_right = 512.0
+margin_bottom = 300.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="background" type="TextureRect" parent="ui"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -646.112
+margin_top = -371.094
+margin_right = 1613.89
+margin_bottom = 888.906
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="grid_LobbyPlayers" type="GridContainer" parent="ui"]
+margin_left = 159.0
+margin_top = 103.0
+margin_right = 528.0
+margin_bottom = 526.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="grid" type="GridContainer" parent="ui"]
+margin_left = 420.0
+margin_top = 220.0
+margin_right = 680.0
+margin_bottom = 344.0
+columns = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label_player" type="Label" parent="ui/grid"]
+margin_top = 5.0
+margin_right = 128.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 128, 0 )
+text = "Player name:"
+
+[node name="text_player" type="LineEdit" parent="ui/grid"]
+margin_left = 132.0
+margin_right = 260.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 128, 0 )
+text = "Player"
+
+[node name="button_changeName" type="Button" parent="ui/grid/text_player"]
+margin_left = 137.0
+margin_top = 3.0
+margin_right = 265.0
+margin_bottom = 23.0
+text = "Change Name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label_color" type="Label" parent="ui/grid"]
+visible = false
+margin_top = 3.0
+margin_right = 70.0
+margin_bottom = 17.0
+text = "Ship Color:"
+
+[node name="input_color" type="OptionButton" parent="ui/grid"]
+visible = false
+margin_right = 128.0
+margin_bottom = 20.0
+
+[node name="label_hostname" type="Label" parent="ui/grid"]
+visible = false
+margin_top = 5.0
+margin_right = 70.0
+margin_bottom = 19.0
+text = "Hostname:"
+
+[node name="text_hostname" type="LineEdit" parent="ui/grid"]
+visible = false
+margin_right = 128.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 128, 0 )
+text = "192.168.10.111"
+
+[node name="label_spacer" type="Label" parent="ui/grid"]
+margin_top = 31.0
+margin_right = 128.0
+margin_bottom = 45.0
+
+[node name="button_login" type="Button" parent="ui/grid"]
+margin_left = 132.0
+margin_top = 28.0
+margin_right = 260.0
+margin_bottom = 48.0
+text = "Play!"
+
+[node name="label_spacer2" type="Label" parent="ui/grid"]
+visible = false
+margin_left = 89.0
+margin_top = 3.0
+margin_right = 89.0
+margin_bottom = 17.0
+
+[node name="button_start_server" type="Button" parent="ui/grid"]
+visible = false
+margin_left = 46.0
+margin_right = 131.0
+margin_bottom = 20.0
+text = "Start Server"
+
+[node name="LobbyData" type="GridContainer" parent="ui"]
+margin_left = 311.0
+margin_top = 446.0
+margin_right = 791.0
+margin_bottom = 495.0
+columns = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="button_decPlayers" type="Button" parent="ui/LobbyData"]
+margin_right = 49.0
+margin_bottom = 40.0
+text = "    -    "
+
+[node name="label_MaxPlayers" type="Label" parent="ui/LobbyData"]
+margin_left = 53.0
+margin_top = 13.0
+margin_right = 129.0
+margin_bottom = 27.0
+text = "Max Players"
+
+[node name="button_incPlayers" type="Button" parent="ui/LobbyData"]
+margin_left = 133.0
+margin_right = 185.0
+margin_bottom = 40.0
+text = "    +    "
+
+[node name="button_isPublic" type="CheckButton" parent="ui/LobbyData"]
+margin_left = 189.0
+margin_right = 308.0
+margin_bottom = 40.0
+text = "Public"
+
+[node name="button_isReady" type="CheckButton" parent="ui/LobbyData"]
+margin_left = 312.0
+margin_right = 430.0
+margin_bottom = 40.0
+text = "Ready"
+
+[node name="label_error" type="Label" parent="ui/LobbyData"]
+margin_top = 44.0
+margin_right = 49.0
+margin_bottom = 58.0
+[connection signal="pressed" from="ui/grid/text_player/button_changeName" to="." method="_on_button_changeName_pressed"]
+[connection signal="pressed" from="ui/grid/button_login" to="." method="_on_button_login_pressed"]
+[connection signal="pressed" from="ui/grid/button_start_server" to="." method="_on_button_start_server_pressed"]
+[connection signal="pressed" from="ui/LobbyData/button_decPlayers" to="." method="_on_button_decPlayers_pressed"]
+[connection signal="pressed" from="ui/LobbyData/button_incPlayers" to="." method="_on_button_incPlayers_pressed"]
+[connection signal="pressed" from="ui/LobbyData/button_isPublic" to="." method="_on_button_isPublic_pressed"]
+[connection signal="pressed" from="ui/LobbyData/button_isReady" to="." method="_on_button_isReady_pressed"]

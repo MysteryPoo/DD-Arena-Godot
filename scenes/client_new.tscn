@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Levels/dungeon.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Dwarf/Dwarf.tscn" type="PackedScene" id=2]
+[ext_resource path="res://PowerUps/Bombs/BombPile.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scripts/client_new.gd" type="Script" id=4]
+[ext_resource path="res://Bomb/Bomb.tscn" type="PackedScene" id=5]
+
+[node name="world" type="Node2D"]
+script = ExtResource( 4 )
+
+[node name="Dungeon" parent="." instance=ExtResource( 1 )]
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player" parent="Players" instance=ExtResource( 2 )]
+position = Vector2( 345.763, 137.525 )
+
+[node name="PowerUps" type="Node2D" parent="."]
+
+[node name="BombPile" parent="PowerUps" instance=ExtResource( 3 )]
+position = Vector2( 603.256, 139.963 )
+
+[node name="BombPile2" parent="PowerUps" instance=ExtResource( 3 )]
+position = Vector2( 365.757, 310.162 )
+_ammunition = 3
+
+[node name="Weapons" type="Node2D" parent="."]
+
+[node name="KinematicBody2D" parent="Weapons" instance=ExtResource( 5 )]
+position = Vector2( 320.44, 248.004 )
+
+[node name="KinematicBody2D2" parent="Weapons" instance=ExtResource( 5 )]
+position = Vector2( 386.738, 228.36 )
+
+[node name="KinematicBody2D3" parent="Weapons" instance=ExtResource( 5 )]
+position = Vector2( 438.304, 182.933 )
+
+[node name="KinematicBody2D4" parent="Weapons" instance=ExtResource( 5 )]
+position = Vector2( 465.314, 128.913 )
