@@ -1,8 +1,11 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://images/Bomb/97e72713-2bff-4c71-9216-30a72a6452c1.png" type="Texture" id=1]
 [ext_resource path="res://images/particle.png" type="Texture" id=2]
 [ext_resource path="res://Bomb/Bomb.gd" type="Script" id=3]
+
+[sub_resource type="CircleShape2D" id=8]
+radius = 32.5805
 
 [sub_resource type="Gradient" id=1]
 colors = PoolColorArray( 1, 0.529412, 0, 1, 0.501961, 0.501961, 0.501961, 1 )
@@ -19,14 +22,13 @@ orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 color_ramp = SubResource( 2 )
 
-[sub_resource type="OccluderPolygon2D" id=6]
+[sub_resource type="OccluderPolygon2D" id=4]
 polygon = PoolVector2Array( -6.6875, 0.125889, -6.60435, 2.99477, -5.68963, 4.36685, -4.85807, 5.36472, -3.65231, 6.44575, 3.29122, 6.40417, 4.12278, 5.53103, 5.28697, 4.36685, 6.20168, 3.36897, 6.24326, 0.0427322, 2.75071, -1.32934, -0.0350189, -1.37092, -3.65231, -1.37092 )
 
-[sub_resource type="CircleShape2D" id=4]
+[sub_resource type="CircleShape2D" id=5]
 radius = 5.54346
 
-[sub_resource type="Animation" id=5]
-resource_name = "Explode"
+[sub_resource type="Animation" id=6]
 length = 0.5
 loop = true
 tracks/0/type = "value"
@@ -53,9 +55,76 @@ tracks/1/keys = {
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1.25, 1.25 ), Vector2( 1, 1 ) ]
 }
+tracks/2/type = "value"
+tracks/2/path = NodePath("WarningZone/WarningIndicator:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0.121569 ), Color( 1, 1, 1, 1 ) ]
+}
 
-[node name="KinematicBody2D" type="KinematicBody2D"]
+[sub_resource type="Animation" id=9]
+resource_name = "Idle"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "Land"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -23 ), Vector2( 0, -18 ), Vector2( 0, 0 ) ]
+}
+
+[node name="Bomb" type="RigidBody2D" groups=[
+"Bomb",
+]]
+gravity_scale = 0.0
+sleeping = true
+linear_damp = 1.0
+angular_damp = 100.0
 script = ExtResource( 3 )
+
+[node name="WarningZone" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WarningZone"]
+shape = SubResource( 8 )
+
+[node name="WarningIndicator" type="Polygon2D" parent="WarningZone"]
+visible = false
+modulate = Color( 1, 1, 1, 0.121569 )
+show_behind_parent = true
+position = Vector2( -15.126, -27.1007 )
+color = Color( 1, 0, 0, 1 )
+polygon = PoolVector2Array( -15.453, 16.5422, -1.12921, 13.1265, 33.3581, 13.0163, 54.1827, 22.8226, 53.5216, 36.4853, 32.0367, 45.343, -4.51776, 47.2337, -19.0135, 37.1497 )
+
+[node name="Shadow" type="Polygon2D" parent="."]
+position = Vector2( 0, -16.801 )
+color = Color( 0, 0, 0, 0.843137 )
+polygon = PoolVector2Array( -5.30846, 20.2961, -7.63301, 22.4269, -7.63301, 25.3326, -5.11475, 27.076, 4.18341, 27.2697, 6.89537, 25.9137, 6.89537, 22.4269, 4.18341, 20.2961 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
@@ -69,17 +138,18 @@ process_material = SubResource( 3 )
 texture = ExtResource( 2 )
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Sprite"]
-occluder = SubResource( 6 )
+occluder = SubResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 4 )
+visible = false
+shape = SubResource( 5 )
+disabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/Explode = SubResource( 5 )
-
-[node name="Warning" type="Polygon2D" parent="."]
-visible = false
-modulate = Color( 1, 1, 1, 0.133333 )
-position = Vector2( -15.126, -27.1007 )
-color = Color( 1, 0, 0, 1 )
-polygon = PoolVector2Array( -15.453, 16.5422, -1.12921, 13.1265, 33.3581, 13.0163, 54.1827, 22.8226, 53.5216, 36.4853, 32.0367, 45.343, -4.51776, 47.2337, -19.0135, 37.1497 )
+anims/Explode = SubResource( 6 )
+anims/Idle = SubResource( 9 )
+anims/Land = SubResource( 10 )
+[connection signal="body_entered" from="WarningZone" to="." method="_on_WarningZone_body_entered"]
+[connection signal="body_exited" from="WarningZone" to="." method="_on_WarningZone_body_exited"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
+[connection signal="animation_started" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_started"]

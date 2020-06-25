@@ -33,14 +33,12 @@ var update_id = 0
 
 func _ready():
 	print("Starting the server ...")
-	print("Server port: " + str(MatchMakingServer.port))
-	print("Max players: " + str(MatchMakingServer.playerCount))
+	print("Server port: " + str(global.SERVER_PORT))
+	print("Max players: " + str(global.MAX_PLAYERS))
 	var peer = NetworkedMultiplayerENet.new()
-	print("Listening on port: " + str(MatchMakingServer.port))
-	if peer.create_server(MatchMakingServer.port, MatchMakingServer.playerCount) != OK:
+	if peer.create_server(global.SERVER_PORT, global.MAX_PLAYERS) != OK:
 		print("Unable to create server")
 		return
-	MatchMakingServer.ConnectToMatchmaking()
 		
 	#if get_tree().set_network_peer(peer) != OK:
 	#	print("Unable to set network peer!")
@@ -226,6 +224,8 @@ remote func register_player(id, info):
 
 remote func player_input(id, key, pressed):
 	print("Remote: player_input(" + str(id)+","+key+","+str(pressed)+")")
+	print("Id passed in: %s" % str(id))
+	print("Id of client: %s" % str(get_tree().get_rpc_sender_id()))
 
 	if key == "left":
 		player_info[id].rotation = -1 if pressed else 0

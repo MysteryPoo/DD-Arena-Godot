@@ -6,7 +6,9 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 39.0969
 
-[node name="BombPile" type="Node2D"]
+[node name="BombPile" type="Node2D" groups=[
+"BombPile",
+]]
 script = ExtResource( 2 )
 
 [node name="Icon" type="Sprite" parent="."]
@@ -42,4 +44,10 @@ offset = Vector2( 1.3, -3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 1 )
+
+[node name="Respawn" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="timeout" from="Respawn" to="." method="_on_Respawn_timeout"]

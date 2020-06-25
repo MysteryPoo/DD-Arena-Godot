@@ -60,7 +60,8 @@ signal StartGame(ip, port, token)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	client.connect_to_host("dda.dragonringstudio.com", 40001)
-	#client.connect_to_host("localhost", 40000)
+	#client.connect_to_host("dda-2.dragonringstudio.com", 40001)
+	#client.connect_to_host("localhost", 40001)
 	_loadAccount()
 
 
@@ -140,7 +141,8 @@ func _handleLobbyPlayer(message):
 	emit_signal("LobbyData", lobbyData, myReadyStatus)
 
 func _handleStartGame(message):
-	emit_signal("StartGame", message.ip, int(message.port), int(message.token))
+	#emit_signal("StartGame", message.ip, int(message.port), int(message.token))
+	emit_signal("StartGame", message.ip, int(message.port), 0)
 
 func _loadAccount():
 	var file := File.new();

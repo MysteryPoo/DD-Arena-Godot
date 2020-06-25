@@ -43,15 +43,10 @@ func _ready():
 	label_player.visible = false
 	input_player.visible = false
 	button_changeName.visible = false
-	
-	MatchMakingClient.connect("NewNameRequired", self, "_newNameRequired")
-	MatchMakingClient.connect("LoginSuccess", self, "_on_loginSuccess")
-	MatchMakingClient.connect("LobbyData", self, "_on_lobbyData")
-	MatchMakingClient.connect("StartGame", self, "_on_startGame")
 
 # Callback function for "Start!" button
 func _on_button_login_pressed():
-	MatchMakingClient.StartGame()
+	pass
 
 # Callback function for "Start Server" button
 func _on_button_start_server_pressed():
@@ -67,12 +62,11 @@ func _newNameRequired():
 	button_changeName.visible = true
 
 func _on_button_changeName_pressed():
-	MatchMakingClient.ChangeName(input_player.text)
 	button_changeName.visible = false
 	input_player.editable = false
 
 func _on_loginSuccess():
-	MatchMakingClient.CreateLobby()
+	pass
 
 func _on_lobbyData(lobbyData, myReadyStatus):
 	panel_LobbyData.visible = true
@@ -93,20 +87,20 @@ func _on_lobbyData(lobbyData, myReadyStatus):
 
 func _on_button_incPlayers_pressed():
 	var isPublic = button_isPublic.pressed
-	var maxPlayers = MatchMakingClient.lobbyData.maxPlayers + 1
-	MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
+	#var maxPlayers = MatchMakingClient.lobbyData.maxPlayers + 1
+	#MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
 	_setLobbyControls(true)
 
 func _on_button_isPublic_pressed():
 	var isPublic = button_isPublic.pressed
-	var maxPlayers = MatchMakingClient.lobbyData.maxPlayers
-	MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
+	#var maxPlayers = MatchMakingClient.lobbyData.maxPlayers
+	#MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
 	_setLobbyControls(true)
 
 func _on_button_decPlayers_pressed():
 	var isPublic = button_isPublic.pressed
-	var maxPlayers = max(1, MatchMakingClient.lobbyData.maxPlayers - 1)
-	MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
+	#var maxPlayers = max(1, MatchMakingClient.lobbyData.maxPlayers - 1)
+	#MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
 	_setLobbyControls(true)
 
 func _setLobbyControls(disabled):
@@ -117,16 +111,7 @@ func _setLobbyControls(disabled):
 
 
 func _on_button_isReady_pressed():
-	MatchMakingClient.SetReady(button_isReady.pressed)
 	_setLobbyControls(true)
 
 func _on_startGame(ip, port, token):
-	if port == 0 && token == 0:
-		label_error.text = ip
-	else:
-		global.cfg_server_ip = ip
-		global.SERVER_PORT = port
-		if get_tree().change_scene("res://scenes/client.tscn") != OK:
-			print("Unable to load server scene!")
-		#Start the Game
-		#Start the Game
+	pass

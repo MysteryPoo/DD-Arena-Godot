@@ -1,5 +1,7 @@
 extends Node
 
+class_name MatchMakingServer
+
 enum MESSAGE_ID {
 	Challenge,
 	Handshake,

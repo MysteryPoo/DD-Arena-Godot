@@ -9,7 +9,9 @@
 # *************************************************
 extends Node
 
-var SERVER_PORT = 40010
+const SERVER_PORT = 9000
+var EXTPORT = 0
+var MATCH_ID = ""
 const MAX_PLAYERS = 16
 const WORLD_SIZE = 40000.0
 const TICK_DURATION = 50 # In milliseconds, it means 20 network updates/second

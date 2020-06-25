@@ -28,8 +28,8 @@ onready var chat = $UI/item_chat
 func _ready():
 	
 	print("Server IP       : " + global.cfg_server_ip)
-	print("Server Port     : " + str(global.SERVER_PORT))
-	print("Player Name     : " + MatchMakingClient._accountInfo.username)
+	print("Server Port     : " + str(global.EXTPORT))
+	print("Player Name     : " + "")
 	print("Spaceship Color : " + global.cfg_color)
 	
 	print("Connecting to server ...")
@@ -37,7 +37,7 @@ func _ready():
 	var peer = NetworkedMultiplayerENet.new()
 	
 	# Create a client using specified server ip
-	peer.create_client(global.cfg_server_ip, global.SERVER_PORT)
+	peer.create_client(global.cfg_server_ip, global.EXTPORT)
 	#peer.create_client("localhost", global.SERVER_PORT)
 	
 	# Associate the current network peer to the tree
@@ -158,7 +158,7 @@ func _on_client_connected_ok():
 	print("Callback: _on_client_connected_ok")
 	add_chat("Connected. Enjoy!")
 	# Only called on clients, not server. Send my ID and info to all the other peers
-	my_info.name = MatchMakingClient._accountInfo.username
+	my_info.name = MyNakama.myName
 	my_info.color = global.cfg_color
 	rpc_id(1,"register_player", get_tree().get_network_unique_id(), my_info)
 	OS.set_window_title("Connected as " + my_info.name)
