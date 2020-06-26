@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://images/background.png" type="Texture" id=1]
+[ext_resource path="res://scenes/Lobby/lobby.gd" type="Script" id=2]
+
+[node name="lobby" type="CanvasLayer"]
+script = ExtResource( 2 )
+
+[node name="ui" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -512.0
+margin_top = -300.0
+margin_right = 512.0
+margin_bottom = 300.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="background" type="TextureRect" parent="ui"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -644.971
+margin_top = -368.13
+margin_right = 1615.03
+margin_bottom = 891.87
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="grid_LobbyUsers" type="GridContainer" parent="ui"]
+margin_left = 184.0
+margin_top = 63.0002
+margin_right = 892.0
+margin_bottom = 493.0
+
+[node name="Button_Start" type="Button" parent="ui"]
+margin_left = 477.0
+margin_top = 476.0
+margin_right = 606.0
+margin_bottom = 539.0
+text = "Start"
+
+[node name="Label_LobbyMessage" type="Label" parent="ui"]
+margin_left = 285.0
+margin_top = 554.0
+margin_right = 814.0
+margin_bottom = 591.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="tree_exiting" from="." to="." method="_on_lobby_tree_exiting"]
+[connection signal="pressed" from="ui/Button_Start" to="." method="_on_Button_Start_pressed"]

@@ -9,11 +9,6 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node",
-"class": "MatchMakingServer",
-"language": "GDScript",
-"path": "res://Autoloads/MatchMakingServer.gd"
-}, {
 "base": "Reference",
 "class": "NakamaAPI",
 "language": "GDScript",
@@ -85,7 +80,6 @@ _global_script_classes=[ {
 "path": "res://addons/com.heroiclabs.nakama/api/NakamaWriteStorageObject.gd"
 } ]
 _global_script_class_icons={
-"MatchMakingServer": "",
 "NakamaAPI": "",
 "NakamaAsyncResult": "",
 "NakamaClient": "",

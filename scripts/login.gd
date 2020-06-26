@@ -1,117 +1,93 @@
-# *************************************************
-# godot3-spacegame by Yanick Bourbeau
-# Released under MIT License
-# *************************************************
-# CLIENT-SIDE CODE
-#
-# Populate the login form and handle callbacks
-# on buttons.
-#
-# *************************************************
+
 extends CanvasLayer
 
-onready var input_color = $ui/grid/input_color
-onready var label_player = get_node("ui/grid/label_player")
-onready var input_player =$ui/grid/text_player
-onready var button_changeName = get_node("ui/grid/text_player/button_changeName")
-onready var input_hostname = $ui/grid/text_hostname
-onready var grid = get_node("ui/grid")
-onready var panel_LobbyData = get_node("ui/LobbyData")
-onready var button_decPlayers = get_node("ui/LobbyData/button_decPlayers")
-onready var label_MaxPlayers = get_node("ui/LobbyData/label_MaxPlayers")
-onready var button_incPlayers = get_node("ui/LobbyData/button_incPlayers")
-onready var button_isPublic = get_node("ui/LobbyData/button_isPublic")
-onready var player_instance = preload("res://scenes/player.tscn")
-onready var grid_LobbyPlayers = get_node("ui/grid_LobbyPlayers")
-onready var button_isReady = get_node("ui/LobbyData/button_isReady")
-onready var label_error = get_node("ui/LobbyData/label_error")
-onready var button_start = get_node("ui/grid/button_login")
+export var accountCache: String
 
-var playerData = {}
+var _email: String = ""
+var _password: String = ""
+var _create: bool = false
+
+onready var field_email: LineEdit = get_node("ui/Field_Email")
+onready var field_password: LineEdit = get_node("ui/Field_Password")
+onready var field_passwordrepeat: LineEdit = get_node("ui/Field_PasswordRepeat")
+onready var label_error: Label = get_node("ui/Label_Error")
+onready var button_play: Button = get_node("ui/Button_Play")
+onready var button_cancel: Button = get_node("ui/Button_Cancel")
+onready var container_user := get_node("ui/User")
+
+onready var preload_lobbyUser = preload("res://scenes/Lobby/LobbyUser/lobbyUser.tscn")
 
 func _ready():
-	# Adding four spaceship colors
-	input_color.add_item("Blue")
-	input_color.add_item("Red")
-	input_color.add_item("Green")
-	input_color.add_item("Yellow")
+	_loadAccountCache()
+	field_email.text = _email
+	field_password.text = _password
+	MyNakama.connect("authenticated", self, "_on_authenticated")
+	MyNakama.connect("accountInfo", self, "_on_accountInfo")
+
+
+func _on_Field_Email_text_changed(new_text: String):
+	_email = new_text
+
+
+func _on_Field_Password_text_changed(new_text: String):
+	_password = new_text
+
+func _on_Field_PasswordRepeat_text_changed(new_text):
+	if new_text != field_password.text:
+		field_passwordrepeat.modulate = Color.red
+	else:
+		field_passwordrepeat.modulate = Color.green
+
+func _on_Button_Play_pressed():
+	field_email.editable = false
+	field_password.editable = false
+	if (_create && field_passwordrepeat.modulate == Color.green) || not _create:
+		MyNakama.Authenticate(_email, _password, _create)
+
+func _on_Button_Cancel_pressed():
+	button_cancel.visible = false
+	button_cancel.disabled = true
+	button_play.text = "Play"
+	field_passwordrepeat.editable = false
+	field_passwordrepeat.visible = false
+	_create = false
+
+func _on_authenticated(error):
+	label_error.text = error.Message
+	if error.Code == 0:
+		_saveAccountCache()
+		MyNakama.GetAccount()
+		get_tree().change_scene("res://scenes/Lobby/lobby.tscn")
+	elif error.Code == 404:
+		_create = true
+		field_passwordrepeat.editable = true
+		field_passwordrepeat.visible = true
+		button_play.text = "New Account"
+		button_cancel.visible = true
+		button_cancel.disabled = false
+	field_email.editable = true
+	field_password.editable = true
 	
-	# Set default hostname
-	input_hostname.text = global.DEFAULT_HOSTNAME
-	
-	# Hide Player Name
-	label_player.visible = false
-	input_player.visible = false
-	button_changeName.visible = false
+func _on_accountInfo():
+	var lobbyUser = preload_lobbyUser.instance()
+	container_user.add_child(lobbyUser)
+	lobbyUser.LoadAvatar(MyNakama.myAccount.user.avatar_url)
+	lobbyUser.SetName(MyNakama.myAccount.user.username)
 
-# Callback function for "Start!" button
-func _on_button_login_pressed():
-	pass
+func _loadAccountCache():
+	var file := File.new()
+	if file.file_exists(accountCache):
+		file.open(accountCache, File.READ)
+		var loadedAccount = JSON.parse(file.get_line()).result
+		_email = loadedAccount.email
+		_password = loadedAccount.password
+		file.close()
 
-# Callback function for "Start Server" button
-func _on_button_start_server_pressed():
-	# Change to server scene
-	if get_tree().change_scene("res://scenes/server.tscn") != OK:
-		print("Unable to load server scene!")
-
-func _newNameRequired():
-	print("New Name Required")
-	grid.visible = true
-	label_player.visible = true
-	input_player.visible = true
-	button_changeName.visible = true
-
-func _on_button_changeName_pressed():
-	button_changeName.visible = false
-	input_player.editable = false
-
-func _on_loginSuccess():
-	pass
-
-func _on_lobbyData(lobbyData, myReadyStatus):
-	panel_LobbyData.visible = true
-	_setLobbyControls(false)
-	label_MaxPlayers.text = str(lobbyData.maxPlayers)
-	button_isPublic.pressed = lobbyData.isPublic
-	for p in lobbyData.userArray:
-		var player = lobbyData.userArray.get(p)
-		if not playerData.has(player.id):
-			playerData[player.id] = player_instance.instance()
-			grid_LobbyPlayers.add_child(playerData[player.id])
-		playerData.get(player.id).SetName(player.id)
-		playerData.get(player.id).SetReady(player.isReady)
-	if myReadyStatus == 0:
-		button_isReady.pressed = false
-	elif myReadyStatus == 1:
-		button_isReady.pressed = true
-
-func _on_button_incPlayers_pressed():
-	var isPublic = button_isPublic.pressed
-	#var maxPlayers = MatchMakingClient.lobbyData.maxPlayers + 1
-	#MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
-	_setLobbyControls(true)
-
-func _on_button_isPublic_pressed():
-	var isPublic = button_isPublic.pressed
-	#var maxPlayers = MatchMakingClient.lobbyData.maxPlayers
-	#MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
-	_setLobbyControls(true)
-
-func _on_button_decPlayers_pressed():
-	var isPublic = button_isPublic.pressed
-	#var maxPlayers = max(1, MatchMakingClient.lobbyData.maxPlayers - 1)
-	#MatchMakingClient.UpdateLobby(isPublic, maxPlayers)
-	_setLobbyControls(true)
-
-func _setLobbyControls(disabled):
-	button_start.disabled = disabled
-	button_isPublic.disabled = disabled
-	button_incPlayers.disabled = disabled
-	button_decPlayers.disabled = disabled
-
-
-func _on_button_isReady_pressed():
-	_setLobbyControls(true)
-
-func _on_startGame(ip, port, token):
-	pass
+func _saveAccountCache():
+	var file := File.new()
+	file.open(accountCache, File.WRITE)
+	file.seek(0)
+	file.store_string(JSON.print({
+		email = _email,
+		password = _password
+	}))

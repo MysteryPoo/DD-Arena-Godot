@@ -36,13 +36,13 @@ end
 
 -- Create, start, and retrieve the public/external port of a Game Server container
 -- returns the port that the clients should connect to
-function M.RequestGameServer(matchid)
+function M.RequestGameServer(matchid, password)
 	local port = M.GetFreePort()
 	
 	if port == -1 then
 		error("No servers available.")
 	else
-		local success, containerId = pcall(M.CreateContainer, port, matchid)
+		local success, containerId = pcall(M.CreateContainer, port, matchid, password)
 		if (not success) then
 			nk.logger_error(string.format("Failure to create container: %q", containerId))
 			error(containerId)
@@ -117,7 +117,7 @@ end
 
 -- Create a container of a specific (hardcoded) image exposing the port on both tcp/udp
 -- returns the container id
-function M.CreateContainer(port, matchid)
+function M.CreateContainer(port, matchid, password)
 	local path = "containers/create"
 	local url = GetUrl(path)
 	local method = "POST"
@@ -129,7 +129,8 @@ function M.CreateContainer(port, matchid)
 			string.format("EXTPORT=%d", port),
 			string.format("MATCHID=%s", matchid),
 			"SERVER=true",
-			"NOMATCHMAKING=0"
+			"NOMATCHMAKING=0",
+			string.format("PASSWORD=%s", password)
 		},
 		["HostConfig"] = {
 			["AutoRemove"] = true,

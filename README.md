@@ -9,3 +9,6 @@ As an extra bonus, there is an implementation of a latency compensation method b
 
 Video of gameplay: (No sound, only video)
 https://www.youtube.com/watch?v=XF2CTlWaGkQ
+
+# Custom Nakama Modules
+The modules created to support this project are stored in addons\com.heroiclabs.nakama\modules
