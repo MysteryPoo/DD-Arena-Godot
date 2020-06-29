@@ -212,7 +212,7 @@ func _parse_result(p_responses : Dictionary, p_id : String, p_type, p_ns : GDScr
 		return p_type.create(p_ns, data.get(result_key))
 
 func _send_async(p_message, p_parse_type = NakamaAsyncResult, p_ns = NakamaRTAPI, p_msg_key = null, p_result_key = null):
-	logger.debug("Sending async request: %s" % p_message)
+	#logger.debug("Sending async request: %s" % JSON.print(p_message))
 	# For messages coming from the API which does not have a key defined, so we can override it
 	var msg = p_msg_key
 	# For regular RT messages
@@ -369,12 +369,13 @@ func rpc_async(p_func_id : String, p_payload = null) -> NakamaAPI.ApiRpc:
 # @param p_presences - The presences in the match who should receive the input.
 # Returns a task which represents the asynchronous operation.
 func send_match_state_async(p_match_id, p_op_code : int, p_data : String, p_presences = null):
-	var req = _send_async(NakamaRTMessage.MatchDataSend.new(
+	var message = NakamaRTMessage.MatchDataSend.new(
 		p_match_id,
 		p_op_code,
 		Marshalls.utf8_to_base64(p_data),
 		p_presences
-	))
+	)
+	var req = _send_async(message)
 	# This do not return a response from server, you don't really need to wait for it.
 	req.call_deferred("resume", {})
 	call_deferred("_survive", req)

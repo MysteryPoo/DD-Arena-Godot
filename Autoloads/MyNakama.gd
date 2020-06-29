@@ -11,7 +11,7 @@ enum OP {
 }
 
 const NAKAMA_KEY := "defaultkey"
-const NAKAMA_HOSTNAME := "127.0.0.1"
+const NAKAMA_HOSTNAME := "localhost"
 const NAKAMA_PORT := 7350
 const NAKAMA_METHOD := "http"
 
@@ -98,7 +98,7 @@ func _setupMatchmaking():
 	global.EXTPORT = int(OS.get_environment("EXTPORT"))
 	global.MATCH_ID = OS.get_environment("MATCHID")
 	
-	session = yield(client.authenticate_email_async(email, password, null, false), "completed")
+	session = yield(client.authenticate_email_async(email, password, null, true), "completed")
 	var account = yield(client.get_account_async(session), "completed")
 	
 	var connectionAttempt: NakamaAsyncResult = yield(socket.connect_async(session), "completed")
@@ -172,6 +172,7 @@ func CreateMatch():
 		var matchInfo = JSON.parse(created_match.payload).result
 
 		var match_id = matchInfo.MatchId
+		print(match_id)
 		var joined_match = yield(socket.join_match_async(match_id), "completed")
 		if joined_match.is_exception():
 			print("An error occured: %s" % joined_match)

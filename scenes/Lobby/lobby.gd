@@ -15,8 +15,6 @@ func _ready():
 	MyNakama.ConnectSocket()
 
 func _process(_delta):
-	if match_id != "":
-		MyNakama.socket.send_match_state_async(match_id, MyNakama.OP.LOBBYMESSAGE, "Hello")
 	pass
 	
 func _on_match_presence(p_presence : NakamaRTAPI.MatchPresenceEvent):
@@ -56,7 +54,7 @@ func _on_received_match_state(p_match_state):
 			_setHost(p_match_state.data)
 	elif p_match_state.op_code == MyNakama.OP.STARTGAME:
 		var message = JSON.parse(p_match_state.data).result
-		global.EXTPORT = message.Port
+		global.EXTPORT = int(message.Port)
 		get_tree().change_scene("res://scenes/client.tscn")
 	elif p_match_state.op_code == MyNakama.OP.LOBBYMESSAGE:
 		get_node("ui/Label_LobbyMessage").text = p_match_state.data
@@ -84,4 +82,4 @@ func _setHost(new_host):
 
 func _on_Button_Start_pressed():
 	print("Starting game!")
-	MyNakama.socket.send_match_state_async(match_id, MyNakama.OP.STARTGAME, "Nothing")
+	MyNakama.socket.send_match_state_async(MyNakama.myMatchId, MyNakama.OP.STARTGAME, "Nothing")

@@ -7,6 +7,7 @@
 -- to connect and group together (like friends) prior to a real matchmaking. These are all still thoughts;
 -- I have yet to design anything for that capability. 
 local nk = require("nakama")
+local containerapi = require("containerapi")
 
 local M = {}
 
@@ -14,6 +15,15 @@ local OP_HOST = 0
 local OP_STARTGAME = 1
 local OP_LOBBYMESSAGE = 2
 local OP_REGISTER_AS_SERVER = 3
+
+local function request_gameserver(context, state)
+	local success, port = pcall(containerapi.RequestGameServer, context.match_id, state.server_password)
+	if (not success) then
+		error(port)
+	else
+		return port
+	end
+end
 
 function M.match_init(context, setupstate)
 	local gamestate = {
@@ -73,7 +83,7 @@ function M.match_loop(context, dispatcher, tick, state, messages)
 		if message.op_code == OP_STARTGAME then
 			if state.host == message.sender.user_id and false == state.server_requested then
 				state.server_requested = true
-				local success, port = request_gameserver(context, state)
+				local success, port = pcall(request_gameserver, context, state)
 				if (not success) then
 					nk.logger_error(port)
 					dispatcher.broadcast_message(OP_LOBBYMESSAGE, "Unable to create a server...")
@@ -108,15 +118,6 @@ function M.match_terminate(context, dispatcher, tick, state, grace_seconds)
 	local message = "Server shutting down in " .. grace_seconds .. " seconds"
 	dispatcher.broadcast_message(OP_LOBBYMESSAGE, message)
 	return nil
-end
-
-local function request_gameserver(context, state)
-	local success, port = pcall(containerapi.RequestGameServer, context.match_id, state.server_password)
-	if (not success) then
-		error(port)
-	else
-		return port
-	end
 end
 
 return M
