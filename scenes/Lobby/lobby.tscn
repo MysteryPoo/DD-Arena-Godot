@@ -38,6 +38,7 @@ margin_right = 892.0
 margin_bottom = 493.0
 
 [node name="Button_Start" type="Button" parent="ui"]
+visible = false
 margin_left = 477.0
 margin_top = 476.0
 margin_right = 606.0

@@ -4,16 +4,23 @@
 -- My prototype doesn't actually have matchmaking, yet.
 
 local nk = require("nakama")
+local containerapi = require("containerapi")
 
 local function create_match(context, payload)
-	nk.logger_info("RPC called: create_match_rpc")
 	local modulename = "dda"
 	local setupstate = { initialstate = payload }
 	local matchid = nk.match_create(modulename, setupstate)
 	
-	return nk.json_encode({
-		["MatchId"] = matchid
-	})
+	local success, port = pcall(containerapi.RequestGameServer, matchid)
+	if (not success) then
+		error(port)
+	else
+		-- Send notification of some kind
+		return nk.json_encode({
+			["MatchId"] = matchid,
+			["Port"] = port
+		})
+	end
 	
 end
 

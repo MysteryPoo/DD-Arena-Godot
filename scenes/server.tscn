@@ -21,3 +21,4 @@ drag_margin_v_enabled = true
 wait_time = 30.0
 one_shot = true
 autostart = true
+[connection signal="timeout" from="ExitGame" to="." method="_on_ExitGame_timeout"]

@@ -51,8 +51,7 @@ func _ready():
 	if get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected") != OK:
 		print("Unable to connect signal (network_peer_disconnected) !")
 		
-	if node_timer.connect("timeout", self, "_on_ExitGame_timeout") != OK:
-		print("Unable to connect signal (timeout)")
+	MyNakama.socket.connect("received_match_state", self, "_on_received_match_state")
 	
 	
 func _process(delta):
@@ -170,7 +169,10 @@ func _on_player_disconnected(id):
 	player_info.erase(id) 
 	
 	if player_info.size() == 0:
-		get_tree().quit(0)
+		if MyNakama.socket.is_connected_to_host():
+			MyNakama.socket.send_match_state_async(global.MATCH_ID, MyNakama.OP.END_MATCH, "")
+		else:
+			get_tree().quit(0)
 	
 
 
@@ -278,4 +280,11 @@ func player_got_shot(body):
 					player_info[peer_id].node.queue_free()
 					
 func _on_ExitGame_timeout():
-	get_tree().quit(0)
+	if MyNakama.socket.is_connected_to_host():
+		MyNakama.socket.send_match_state_async(global.MATCH_ID, MyNakama.OP.END_MATCH, "")
+	else:
+		get_tree().quit(0)
+
+func _on_received_match_state(p_match_state):
+	if p_match_state.op_code == MyNakama.OP.END_MATCH:
+		get_tree().quit(0)
