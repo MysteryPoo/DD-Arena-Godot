@@ -13,13 +13,13 @@ onready var node_animation = get_node("AnimationPlayer")
 func _ready():
 	pass # Replace with function body.
 
-func _process(delta):
+func _physics_process(delta):
 	if _target_node != null && _delay <= 0:
 		if node_animation.current_animation != "Shrink":
 			node_animation.play("Shrink")
 		position = lerp(position, _target_node.position, 0.1)
 		var distance = _target_node.position.distance_to(position)
-		if distance < 16:
+		if distance < 32:
 			queue_free()
 	else:
 		_delay -= 1

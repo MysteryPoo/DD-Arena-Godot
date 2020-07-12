@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Levels/dungeon.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Levels/dungeon-2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Dwarf/Dwarf.tscn" type="PackedScene" id=2]
 [ext_resource path="res://PowerUps/Bombs/BombPile.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scripts/client_new.gd" type="Script" id=4]
@@ -13,15 +13,15 @@ script = ExtResource( 4 )
 [node name="Players" type="YSort" parent="."]
 
 [node name="Player" parent="Players" instance=ExtResource( 2 )]
-position = Vector2( 345.763, 137.525 )
+position = Vector2( 309.844, 228.444 )
 
 [node name="PowerUps" type="YSort" parent="."]
 
 [node name="BombPile" parent="PowerUps" instance=ExtResource( 3 )]
-position = Vector2( 603.256, 139.963 )
+position = Vector2( 1057.85, 538.437 )
 
 [node name="BombPile2" parent="PowerUps" instance=ExtResource( 3 )]
-position = Vector2( 365.757, 310.162 )
+position = Vector2( 307.389, 301.182 )
 _ammunition = 3
 
 [node name="Weapons" type="YSort" parent="."]

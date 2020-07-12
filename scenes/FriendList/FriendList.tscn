@@ -1,0 +1,78 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/FriendList/Friend.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/FriendList/FriendList.gd" type="Script" id=2]
+
+[node name="FriendList" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="HSeparator" type="VSplitContainer" parent="."]
+margin_right = 287.0
+margin_bottom = 600.0
+split_offset = 311
+dragger_visibility = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="List" type="VBoxContainer" parent="HSeparator"]
+margin_right = 287.0
+margin_bottom = 559.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Friend" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_right = 287.0
+margin_bottom = 32.0
+
+[node name="Friend2" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_top = 36.0
+margin_right = 287.0
+margin_bottom = 68.0
+
+[node name="Friend3" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_top = 72.0
+margin_right = 287.0
+margin_bottom = 104.0
+
+[node name="Friend4" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_top = 108.0
+margin_right = 287.0
+margin_bottom = 140.0
+
+[node name="Friend5" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_top = 144.0
+margin_right = 287.0
+margin_bottom = 176.0
+
+[node name="Friend6" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_top = 180.0
+margin_right = 287.0
+margin_bottom = 212.0
+
+[node name="Friend7" parent="HSeparator/List" instance=ExtResource( 1 )]
+margin_top = 216.0
+margin_right = 287.0
+margin_bottom = 248.0
+
+[node name="Search" type="HSplitContainer" parent="HSeparator"]
+margin_top = 559.0
+margin_right = 287.0
+margin_bottom = 600.0
+split_offset = 126
+dragger_visibility = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Username" type="LineEdit" parent="HSeparator/Search"]
+margin_right = 184.0
+margin_bottom = 41.0
+placeholder_text = "Username"
+
+[node name="Button" type="Button" parent="HSeparator/Search"]
+margin_left = 184.0
+margin_right = 287.0
+margin_bottom = 41.0
+text = "Search"

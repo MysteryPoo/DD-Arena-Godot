@@ -8,20 +8,20 @@ var _ammunition = 0
 var _canPlayFootsteps = true
 var _myBomb: Node2D = null
 
-onready var sprite = get_node("AnimatedSprite")
 onready var camera = get_node("Camera2D")
 onready var footsteps = get_node("Footsteps")
 onready var timer = get_node("Footsteps/Timer")
+onready var playback = get_node("AnimationTree").get("parameters/playback")
+
+onready var myBody = get_node("Body")
+onready var regularHead = get_node("Body/Heads/Head")
+onready var smileHead = get_node("Body/Heads/Head2")
 
 export (int) var speed = 200
 
-
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	pass
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	velocity = Vector2()
 	if Input.is_action_pressed("player_up"):
@@ -33,19 +33,6 @@ func _process(delta):
 	if Input.is_action_pressed("player_right"):
 		velocity.x += 1
 	velocity = velocity.normalized() * speed
-	if velocity.y > 0:
-		sprite.animation = "WalkDown"
-	elif velocity.y < 0:
-		sprite.animation = "WalkUp"
-	else:
-		if velocity.x < 0:
-			sprite.animation = "WalkLR"
-			sprite.flip_h = true
-		elif velocity.x > 0:
-			sprite.animation = "WalkLR"
-			sprite.flip_h = false
-		else:
-			sprite.animation = "Standing"
 			
 	if Input.is_action_just_pressed("player_fire") && _myBomb == null && _ammunition > 0:
 		_myBomb = preload_bomb.instance()
@@ -62,11 +49,19 @@ func _process(delta):
 	if _myBomb != null:
 		_myBomb.position = position
 
-	if sprite.animation != "Standing" && !footsteps.playing && _canPlayFootsteps:
-		footsteps.play()
-		_canPlayFootsteps = false
-		timer.start(0.3)
-		
+	if velocity != Vector2.ZERO:
+		#var new_rotation = rad2deg(position.angle_to_point(position - velocity))
+		#rotation_degrees = new_rotation
+		#get_node("Tween").interpolate_property(self, NodePath("rotation_degrees"), null, new_rotation, 0.5)
+		look_at(position + velocity)
+		playback.travel("Walking")
+		if !footsteps.playing && _canPlayFootsteps:
+			footsteps.play()
+			_canPlayFootsteps = false
+			timer.start(0.3)
+	else:
+		playback.travel("Idle")
+	
 	
 
 func _physics_process(_delta):
@@ -82,7 +77,7 @@ func SetAsActiveCamera():
 func _on_Timer_timeout():
 	_canPlayFootsteps = true
 
-func _damage(damage):
+func _on_damage(damage):
 	print("Hit by bomb for %d damage!" % damage)
 	
 func _on_bomb_destroyed():

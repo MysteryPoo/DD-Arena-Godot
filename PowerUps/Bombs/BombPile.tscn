@@ -10,6 +10,7 @@ radius = 39.0969
 "BombPile",
 ]]
 script = ExtResource( 2 )
+_effectDelay = 5
 
 [node name="Icon" type="Sprite" parent="."]
 position = Vector2( 51.9181, -11.2777 )

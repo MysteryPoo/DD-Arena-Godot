@@ -23,6 +23,7 @@ var session : NakamaSession
 
 var myName : String
 var myMatchId : String
+var myTicket : NakamaRTAPI.MatchmakerTicket
 
 var myAccount : NakamaAPI.ApiAccount
 
@@ -36,6 +37,7 @@ func _ready():
 	socket.connect("connected", self, "_on_socket_connected")
 	socket.connect("closed", self, "_on_socket_closed")
 	socket.connect("received_error", self, "_on_socket_error")
+	socket.connect("received_matchmaker_matched", self, "_on_matchmaker_matched")
 	var isServer = false
 	var isMatchmaking = false
 	# Refer to the containerapi.lua module as to how this ENV appears
@@ -50,47 +52,6 @@ func _ready():
 		if isMatchmaking:
 			_setupMatchmaking()
 		get_tree().change_scene("res://scenes/server.tscn")
-		
-	#else:
-#		var email = "hello@example.com"
-#		var password = "somesupersecretpassword"
-#
-#		var session = yield(client.authenticate_email_async(email, password, null, false), "completed")
-#		var account = yield(client.get_account_async(session), "completed")
-#		print("User id: %s" % account.user.id)
-#		myName = account.user.username
-#		#print("User username: '%s'" % account.user.username)
-#		#print("Account virtual wallet: %s" % str(account.wallet))
-#
-#
-#		socket = Nakama.create_socket()
-#		socket.connect("received_match_presence", self, "_on_match_presence")
-#		var connectionAttempt: NakamaAsyncResult = yield(socket.connect_async(session), "completed")
-#		if connectionAttempt.is_exception():
-#			print("An error occured: %s" % connectionAttempt)
-#			return
-#
-#		var created_match : NakamaAsyncResult = yield(client.rpc_async(session, "create_match_rpc"), "completed")
-#		if created_match.is_exception():
-#			print("An error occured: %s" % created_match)
-#			return
-#
-#		var matchInfo = JSON.parse(created_match.payload).result
-#		print("New match with id %s.", matchInfo.MatchId)
-#
-#		var match_id = matchInfo.MatchId
-#		var joined_match = yield(socket.join_match_async(match_id), "completed")
-#		if joined_match.is_exception():
-#			print("An error occured: %s" % joined_match)
-#			return
-#		for presence in joined_match.presences:
-#			print("User id %s name %s'." % [presence.user_id, presence.username])
-#
-#		print(matchInfo)
-#		global.EXTPORT = int(matchInfo.Port)
-#		global.MATCH_ID = matchInfo.MatchId
-#
-#		get_tree().change_scene("res://scenes/client.tscn")
 
 func _setupMatchmaking():
 	var email = "gameserver@example.com"
@@ -131,6 +92,9 @@ func _on_socket_closed():
 
 func _on_socket_error(error):
 	print(error)
+	
+func _on_matchmaker_matched():
+	pass
 
 func Authenticate(email, password, create):
 	session = yield(client.authenticate_email_async(email, password, null, create), "completed")
@@ -155,32 +119,35 @@ func GetAccount():
 	emit_signal("accountInfo")
 
 func CreateMatch():
-	print("Attempting to create match...")
-	if not socket.is_connected_to_host():
-		if not socket.is_connecting_to_host():
-			var connectionAttempt: NakamaAsyncResult = yield(socket.connect_async(session), "completed")
-			if connectionAttempt.is_exception():
-				print("An error occured: %s" % connectionAttempt)
-				return
-		else:
-			print("Still attempting to connect to the server...")
-			return
-	else:
-		var created_match : NakamaAsyncResult = yield(client.rpc_async(session, "create_match_rpc"), "completed")
-		if created_match.is_exception():
-			print("An error occured: %s" % created_match)
-			return
-		var matchInfo = JSON.parse(created_match.payload).result
-
-		var match_id = matchInfo.MatchId
-		print(match_id)
-		var joined_match = yield(socket.join_match_async(match_id), "completed")
-		if joined_match.is_exception():
-			print("An error occured: %s" % joined_match)
-			return
-		myMatchId = match_id
-		for presence in joined_match.presences:
-			print("User id %s name %s'." % [presence.user_id, presence.username])
+	var query = "*"
+	var min_count = 2
+	var max_count = 4
+	var string_properties = { "user_id": myAccount.user.id }
+	var numeric_properties = { "rank": 8 }
+	var matchmaker_ticket : NakamaRTAPI.MatchmakerTicket = yield(
+		socket.add_matchmaker_async(query, min_count, max_count, string_properties, numeric_properties),
+		"completed"
+	)
+	if matchmaker_ticket.is_exception():
+		print("An error occured: %s" % matchmaker_ticket)
+		return
+	print("Got ticket: %s" % [matchmaker_ticket])
+	myTicket = matchmaker_ticket
+#	var created_match : NakamaAsyncResult = yield(client.rpc_async(session, "create_match_rpc"), "completed")
+#	if created_match.is_exception():
+#		print("An error occured: %s" % created_match)
+#		return
+#	var matchInfo = JSON.parse(created_match.payload).result
+#
+#	var match_id = matchInfo.MatchId
+#	print(match_id)
+#	var joined_match = yield(socket.join_match_async(match_id), "completed")
+#	if joined_match.is_exception():
+#		print("An error occured: %s" % joined_match)
+#		return
+#	myMatchId = match_id
+#	for presence in joined_match.presences:
+#		print("User id %s name %s'." % [presence.user_id, presence.username])
 
 func ConnectSocket():
 	if not socket.is_connected_to_host():

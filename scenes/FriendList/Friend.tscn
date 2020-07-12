@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://fonts/GoodDog.otf" type="DynamicFontData" id=1]
+
+[sub_resource type="DynamicFont" id=1]
+size = 24
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=2]
+default_font = SubResource( 1 )
+
+[node name="Friend" type="HBoxContainer"]
+margin_right = 448.0
+margin_bottom = 36.0
+theme = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+margin_right = 287.0
+margin_bottom = 36.0
+dragger_visibility = 2
+
+[node name="Username" type="Label" parent="HSplitContainer"]
+margin_top = 5.0
+margin_right = 77.0
+margin_bottom = 31.0
+text = "Username"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer"]
+margin_left = 77.0
+margin_right = 287.0
+margin_bottom = 36.0
+alignment = 2
+
+[node name="Button_Invite" type="Button" parent="HSplitContainer/HBoxContainer"]
+margin_right = 57.0
+margin_bottom = 36.0
+text = "Invite"
+
+[node name="Button_Remove" type="Button" parent="HSplitContainer/HBoxContainer"]
+margin_left = 61.0
+margin_right = 131.0
+margin_bottom = 36.0
+text = "Remove"
+
+[node name="Button_Message" type="Button" parent="HSplitContainer/HBoxContainer"]
+margin_left = 135.0
+margin_right = 210.0
+margin_bottom = 36.0
+disabled = true
+text = "Message"
